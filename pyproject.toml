@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hsciutil"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["Eetu Mäkelä <eetu.makela@helsinki.fi>"]
 

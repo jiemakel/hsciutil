@@ -4,24 +4,26 @@ from pathlib import Path
 from typing import Iterator
 
 
-def recurse_directories(input_paths: Iterator[str]) -> Iterator[Path]:
+def recurse_directories(input_paths: Iterator[Path]) -> Iterator[Path]:
     """Expand a list of paths, recursively returning all entries in directories found
 
     Parameters
     ----------
-    input_paths: Iterator[str]
+    input_paths: Iterator[Path]
         The paths to recurse
 
     Returns
     -------
+    Iterator[str]:
+        A flattened iterator of files under the input paths
 
     """
     return itertools.chain.from_iterable(
-        map(lambda path: path.rglob("*") if path.is_dir() else [path], map(Path, input_paths))
+        map(lambda path: path.rglob("*") if path.is_dir() else [path], input_paths)
     )
 
 
-def expand_globs(input_globs: Iterator[str], recurse=False) -> Iterator[str]:
+def expand_globs(input_globs: Iterator[str], recurse=False) -> Iterator[Path]:
     """Recursively expand input globs
 
     Parameters
@@ -37,11 +39,11 @@ def expand_globs(input_globs: Iterator[str], recurse=False) -> Iterator[str]:
         A flattened iterator of the expanded globs
 
     """
-    ret = itertools.chain.from_iterable(
+    ret: Iterator[Path] = map(Path,itertools.chain.from_iterable(
         map(lambda glob_pattern: glob.iglob(str(Path(glob_pattern).expanduser()), recursive=True), input_globs)
-    )
+    ))
     if recurse:
-        seen = set()
+        seen: set[Path] = set()
 
         def filter_seen(path: Path):
             if path in seen:
